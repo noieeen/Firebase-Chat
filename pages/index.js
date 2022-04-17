@@ -1,33 +1,85 @@
 import Head from "../components/Head";
-import Image from "next/image";
+import React ,{Component} from 'react'
+import {
+  Route,
+  BrowserRouter as Router,
+  Switch,
+  Redirect,
+} from "react-router-dom";
 
+import Navbar from "../components/Navbar";
 import Header from "../components/Header";
-import MessageList from "../components/MessageList";
-import MessageBox from "../components/MessageBox";
-import Message from "../components/Message";
 
-import firebase from "../firebase.config";
+//Pages
+//import Home from './Home'
+import Chat from "./Chat";
+import Login from "./Login";
+import Signup from "./Signup";
+import Rooms from "./Rooms";
 
-const style = {
-  html:"py-24 md:py-32 bg-white",
-  container: "container px-4 mx-auto",
-  main: "",
-};
+import { auth } from "../services/firebase.config";
 
-export default function Home() {
-  return (
-    <div className={style.html}>
-      <Head />
+const style = {};
 
-      <div className={style.container}>
-        <div className={style.main}>
-          <Header title="Chat App" />
-          <MessageList db={firebase} />
-        </div>
-        <div className="mt-16" >
-          <MessageBox db={firebase} />
-        </div>
-      </div>
-    </div>
-  );
+function PrivateRoute({component:Component,authenticated,...rest}){
+  return(
+    <Route
+      {...rest}
+      render={(props) => authenticated === true
+        ? <Component {...props} />
+        : <Redirect to={{ pathname: '/login', state: { from: props.location } }} />}
+    />
+  )
 }
+
+function PublicRoute({ component: Component, authenticated, ...rest }) {
+  return (
+    <Route
+      {...rest}
+      render={(props) => authenticated === false
+        ? <Component {...props} />
+        : <Redirect to='/chat' />}
+    />
+  )
+}
+
+class Home extends Component {
+
+constructor(){
+  super()
+  this.state = {
+    authenticated:false,
+    loading:true
+  }
+}
+
+componentDidMount() {
+  auth().onAuthStateChanged((user) => {
+    if (user) {
+      this.setState({
+        authenticated: true,
+        loading: false,
+      });
+    } else {
+      this.setState({
+        authenticated: false,
+        loading: false,
+      });
+    }
+  })
+}
+
+
+  render(){
+    return (
+      <div>
+        <Header />
+        <Navbar />
+        <Chat />
+      </div>
+    );
+  }
+
+}
+
+export default Home

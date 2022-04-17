@@ -1,6 +1,7 @@
 // MessageBox.js
 import React, { Component } from "react";
 import trim from "trim";
+import { auth } from "../services/firebase.config";
 
 const style = {
   textBox:
@@ -17,6 +18,7 @@ class MessageBox extends Component {
     this.sendMessage = this.sendMessage.bind(this);
     this.state = {
       message: "",
+      user: auth().currentUser,
     };
   }
 
@@ -30,14 +32,7 @@ class MessageBox extends Component {
     if (e.keyCode === 13 && trim(e.target.value) !== "") {
       e.preventDefault();
 
-      let dbCon = this.props.db.database().ref("/messages");
-      dbCon.push({
-        message: trim(e.target.value),
-        timeStamp: Date.now()
-      });
-      this.setState({
-        message: "",
-      });
+      this.sendMessage();
     }
   }
 
@@ -46,7 +41,8 @@ class MessageBox extends Component {
       let dbCon = this.props.db.database().ref("/messages");
       dbCon.push({
         message: trim(this.state.message),
-        timeStamp: Date.now()
+        timeStamp: Date.now(),
+        uid: this.state.user.uid,
       });
       this.setState({
         message: "",

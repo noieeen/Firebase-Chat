@@ -7,7 +7,8 @@ const style = {
   modalOvarlay:
     "overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full bg-gray-700/50",
   modalBackground: "flex h-screen w-screen items-center justify-center ",
-  modalWrapper: "relative bg-white rounded-lg shadow p-4 w-full max-w-2xl h-full md:h-auto",
+  modalWrapper:
+    "relative bg-white rounded-lg shadow p-4 w-full max-w-2xl h-full md:h-auto",
   modalHeader:
     "flex justify-between items-center p-5 rounded-t border-b border-gray-200 ",
   modalTitle: "text-xl font-medium leading-normal text-gray-800",
@@ -18,9 +19,17 @@ const style = {
     "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md",
   modalButton:
     "text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10",
-    modalButtonConfirm:"text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center",
+  modalButtonConfirm:
+    "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center",
   modalClose:
     "text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white",
+};
+
+const formatDate = (time) => {
+  let setTime = new Date(time);
+  // let formatedTime = setTime.getFullYear() +'/'+setTime.getMonth()+'/'+setTime.getDate()+' '+setTime.getHours()+':'+setTime.getMinutes()+':'+setTime.getSeconds()
+  let formatedTime = setTime.toLocaleString("en-US");
+  return formatedTime;
 };
 
 const Modal = ({ children, updateFunction, closeModal, modalState, title }) => {
@@ -119,6 +128,7 @@ class Message extends Component {
     return (
       <div>
         {this.props.message}
+        <div>{formatDate(this.props.timeStamp)}</div>
         <a className={style.deleteButton} onClick={this.onClickDelete}>
           Delete
         </a>
@@ -131,19 +141,16 @@ class Message extends Component {
           modalState={this.state.modalState}
           title="Edit Message"
         >
-        <div>
-          Message
-        </div>
-        <div>
-          <textarea
-            className={style.textBox}
-            placeholder={this.props.message}
-            rows={4}
-            onChange={this.onChange}
-            value={this.state.messageUpdate}
-          ></textarea>
-        </div>
-
+          <div>Message</div>
+          <div>
+            <textarea
+              className={style.textBox}
+              placeholder={this.props.message}
+              rows={4}
+              onChange={this.onChange}
+              value={this.state.messageUpdate}
+            ></textarea>
+          </div>
         </Modal>
       </div>
     );

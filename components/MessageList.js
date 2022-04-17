@@ -31,7 +31,7 @@ class MessageList extends Component {
       return (
         <div className="card" key={index}>
           <div className="card-content">
-            <Message message = {message.message} msgKey={message.key} db={this.props.db}/>
+            <Message message = {message.message} timeStamp = {message.timeStamp} msgKey={message.key} db={this.props.db}/>
           </div>
         </div>
       )
